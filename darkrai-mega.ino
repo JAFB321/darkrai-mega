@@ -3,14 +3,17 @@
 #include <MFRC522.h>
 #include "Motor.h"
 
-// ========== RFID ==========
+// ========== RFID ===========
 #define SS_PIN 53
-#define RST_PIN 5
+#define RST_PIN 47
 
 MFRC522 rfid(SS_PIN, RST_PIN);
 
-// ========== RELAY ==========
-#define RELAY_PIN 7
+// ========== RELAY ===========
+#define RELAY_PIN A0
+
+// ========== BUZZER ==========
+#define BUZZER_PIN A15
 
 // ========== Motores ==========
 Motor motor1(22, 23, 24, 25);
@@ -34,6 +37,9 @@ void setup() {
   motor1.init();
   motor2.init();
   motor3.init();
+
+  // Buzzer setup
+  pinMode(BUZZER_PIN, OUTPUT);
 
   Serial.println("init");
 }
@@ -66,6 +72,7 @@ void handleAction(String raw) {
   String action = doc["action"];
   int motor = doc["motor"];
   int cantidad = doc["cantidad"];
+  int alerta = doc["alerta"];
   int PASOS = doc["PASOS"];
   int pasos = cantidad * PASOS_PASTILLA;
   
@@ -86,6 +93,9 @@ void handleAction(String raw) {
     else if(motor == 3) motor3.retroceder(PASOS);
   }
 
+  if(alerta > 0){
+    sonarAlarma(alerta);
+  }
 }
 
 void handleRFID() {
@@ -103,6 +113,16 @@ void handleRFID() {
       digitalWrite(RELAY_PIN, HIGH);
     }
   }
+}
+
+void sonarAlarma(int tono){
+  int tiempo = 600 / tono;
+  	for (int i = 0; i < tiempo; i++) {  // make a sound
+      digitalWrite(BUZZER_PIN, HIGH); // send high signal to buzzer 
+      delay(tono); // delay 1ms
+      digitalWrite(BUZZER_PIN, LOW); // send low signal to buzzer
+      delay(tono);
+	}
 }
 
 bool contains(String txt, String search){
