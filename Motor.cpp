@@ -32,6 +32,10 @@ void Motor::avanzar(int pasos) {
     setOutput();
   }
 
+  digitalWrite(pin1, LOW);
+  digitalWrite(pin2, LOW);
+  digitalWrite(pin3, LOW);
+  digitalWrite(pin4, LOW);
 }
 
 void Motor::retroceder(int pasos) {
@@ -39,6 +43,11 @@ void Motor::retroceder(int pasos) {
     paso = pasoAnterior();
     setOutput();
   }
+
+  digitalWrite(pin1, LOW);
+  digitalWrite(pin2, LOW);
+  digitalWrite(pin3, LOW);
+  digitalWrite(pin4, LOW);
 }
 
 void Motor::setOutput() {
